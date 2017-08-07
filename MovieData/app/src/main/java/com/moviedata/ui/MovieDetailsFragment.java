@@ -21,22 +21,30 @@ import com.moviedata.viewmodel.MoviesDataViewModel;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by MGoel on 02-08-2017.
  */
 
 public class MovieDetailsFragment extends LifecycleFragment implements Injectable {
     private MoviesDataViewModel mViewModel;
-    private RecyclerView rvMovies;
-    private  View view;
+    private View view;
+
+    @BindView(R.id.rv_movies)
+    RecyclerView rvMovies;
+
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
     private MovieAdapter movieAdapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view =inflater.inflate(R.layout.movie_detail_fragment,container,false);
+        view = inflater.inflate(R.layout.movie_detail_fragment, container, false);
+        ButterKnife.bind(this,view);
         return view;
     }
 
@@ -47,37 +55,37 @@ public class MovieDetailsFragment extends LifecycleFragment implements Injectabl
         mViewModel = ViewModelProviders.of(getActivity(), viewModelFactory)
                 .get(MoviesDataViewModel.class);
         setUpView(view);
-        mViewModel.loadMovieData("the","en-US",1,"India",false);
+        mViewModel.loadMovieData("the", "en-US", 1, "India", false);
 
-        mViewModel.getApiResponse().observe(this,movieResponse -> {
-            if (movieResponse.getError()!=null){
+        mViewModel.getApiResponse().observe(this, movieResponse -> {
+            if (movieResponse.getError() != null) {
 
-                Toast.makeText(getContext(),"Error",Toast.LENGTH_LONG).show();
-            }else {
-                movieAdapter.getMovieResults(movieResponse.getMovie().getResults());
-                Toast.makeText(getContext(),"successfull",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_LONG).show();
+            } else {
+                if (movieResponse.getMovie() != null)
+                    movieAdapter.getMovieResults(movieResponse.getMovie().getResults());
+                Toast.makeText(getContext(), "successfull", Toast.LENGTH_LONG).show();
             }
         });
 
     }
 
-        private void setUpView(View view) {
-            rvMovies= view.findViewById(R.id.rv_movies);
-            rvMovies.setHasFixedSize(true);
-            movieAdapter=new MovieAdapter(getContext(),MovieDetailsFragment.this);
-            rvMovies.setAdapter(movieAdapter);
-            rvMovies.setItemAnimator(new DefaultItemAnimator());
-            DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(
-                    rvMovies.getContext(), LinearLayoutManager.VERTICAL
-            );
-            rvMovies.addItemDecoration(mDividerItemDecoration);
-            LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getActivity());
-            rvMovies.setLayoutManager(linearLayoutManager);
+    private void setUpView(View view) {
+        rvMovies.setHasFixedSize(true);
+        movieAdapter = new MovieAdapter(getContext(), mViewModel,MovieDetailsFragment.this);
+        rvMovies.setAdapter(movieAdapter);
+        rvMovies.setItemAnimator(new DefaultItemAnimator());
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(
+                rvMovies.getContext(), LinearLayoutManager.VERTICAL
+        );
+        rvMovies.addItemDecoration(mDividerItemDecoration);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        rvMovies.setLayoutManager(linearLayoutManager);
 
-        }
+    }
 
-    public void replaceFragment(Fragment fragment){
-        getFragmentManager().beginTransaction().replace(R.id.container,fragment).commit();
+    public void replaceFragment(Fragment fragment) {
+        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
 
     }
 }
