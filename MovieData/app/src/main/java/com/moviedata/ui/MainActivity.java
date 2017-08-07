@@ -18,8 +18,6 @@ public class MainActivity extends LifecycleActivity implements HasSupportFragmen
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
-    @Inject
-    public ViewModelFactory viewModelFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +25,7 @@ public class MainActivity extends LifecycleActivity implements HasSupportFragmen
         setContentView(R.layout.activity_main);
         MovieDetailsFragment movieDetailsFragment=new MovieDetailsFragment();
 
-        getSupportFragmentManager().beginTransaction().addToBackStack(null).add(R.id.container,movieDetailsFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.container,movieDetailsFragment).commit();
 
     }
 
@@ -39,6 +37,15 @@ public class MainActivity extends LifecycleActivity implements HasSupportFragmen
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return dispatchingAndroidInjector;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
 }

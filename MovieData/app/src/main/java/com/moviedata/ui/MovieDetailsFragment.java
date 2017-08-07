@@ -85,7 +85,8 @@ public class MovieDetailsFragment extends LifecycleFragment implements Injectabl
     }
 
     public void replaceFragment(Fragment fragment) {
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
 
     }
+
 }
