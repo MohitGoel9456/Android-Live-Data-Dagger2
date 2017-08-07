@@ -1,6 +1,7 @@
 # AndroidLiveDataWithDagger2
 Android app to fetch movie details for a given query
 
+## Set up api key
 <a href="https://www.themoviedb.org/documentation/api">please create an api-key on clicking this link and add it to MovieApiService class to run the project.</a>
 
 Please refer to the following posts describing the code in details:
